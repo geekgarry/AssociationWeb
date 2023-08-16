@@ -1,0 +1,186 @@
+﻿
+@{
+	ViewBag.Title = "AllAssActivity";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>社团组织联合官网</title>
+	@section Scripts{
+		<script src="~/Scripts/jquery-3.3.1.js"></script>
+		<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript">
+			//onload
+			$(function () {
+				//setInterval("getTime();", 1000); //每隔一秒运行一次
+				var jsonstr = eval(document.getElementById("info").value);
+				//alert(document.getElementById("info").value);
+				getByPageBean(1);
+				createTable(jsonstr);
+				/*var dtb = generateDtb();
+				//序列化对象
+				var postdata = JSON.stringify(dtb);
+				$.ajax({
+					type: "GET",
+					url: "~/Admin/AllAdministratorData",
+					data: null, //可选参数
+					dataType: "json",
+					success: function (data) {
+						var jsonstr = eval(data);
+						createTable(data);
+					} //可选参数
+				});*/
+			});
+			function getByPageBean(pageNo){
+			//设置表单的 页号参数
+			//$("[name=pageNo]").val(pageNo);
+			/*表单数据 序列化-->表单中有个隐藏域 储存的是 页号
+       	 		 * 每次异步刷新的是表格信息
+        		 *表单中的数据不会变动
+           		 *根据方法的  pageNo 参数的变动
+           		*查询不同页号的 信息
+			 */
+			var pageno;
+			if (pageNo == null) {
+				pageno = 1;
+			}
+			pageno = pageNo;
+			//var params= $("#selectName").serialize();
+			//ajax请求 中间的data表示为{ pageNo: 1 }Url.Action("AllCampusNewsPage", "CampusNews")
+			/*$.getJSON("/CampusNews/AllCampusNewsPage", { "pageno": pageno}, function (data) {
+				//删除表格之前数据(标题栏除外)--->防止出现几页的数据叠加的情况
+				$("#newtable tr").not(":first").remove();
+				 //设置上一页 下一页连接
+				$(".displaybar a:eq(0)").attr("href","javascript:getByPageBean(1)");
+				$(".displaybar a:eq(1)").attr("href", "javascript:getByPageBean(" + data.hasprevious+")");
+				$(".displaybar a:eq(2)").attr("href", "javascript:getByPageBean(" + data.hasnext+")");
+				$(".displaybar a:eq(3)").attr("href", "javascript:getByPageBean(" + data.totalpagesize+")");
+				 //设置显示信息(当前页号,总页号,总条数)
+				$("#pageNo").html(data.currentpage);
+				$("#totalPage").html(data.totalpagesize);
+				$("#totalCount").html(data.totalsize);
+				 //$("#topagecount").val(data.currentpage);
+				 //在表格添加数据 使用each方法遍历 控制器传回的数据中的list集合
+				$.each(data.arrayListpage, function () {
+					var newid = this.id;
+					var tr = "<tr height='32'><td><div>" + this.newtitle + "</div><div>" + this.create_time +"</div></td></tr>";
+					//把每次遍历的一行数据 添加到 表格中
+					$("#newtable").append(tr);
+				});
+				});*/
+				$.ajax({
+					type: "GET",
+					url: "@Url.Action("AllAssActivityPage", "AssociationActivity")",
+					data: { "pageno": pageno }, //可选参数
+					dataType: "json",
+					success: function (jsondata) {
+						var data = eval(jsondata);
+						//删除表格之前数据(标题栏除外)--->防止出现几页的数据叠加的情况
+						//$("#newtable tr").not(":first").remove();
+						$("#assactable tr").remove();
+						//设置上一页 下一页连接
+						$(".displaybar a:eq(0)").attr("href", "javascript:getByPageBean(1)");
+						$(".displaybar a:eq(1)").attr("href", "javascript:getByPageBean(" + data[3] + ")");
+						$(".displaybar a:eq(2)").attr("href", "javascript:getByPageBean(" + data[2] + ")");
+						$(".displaybar a:eq(3)").attr("href", "javascript:getByPageBean(" + data[5] + ")");
+						//设置显示信息(当前页号,总页号,总条数)
+						$("#pageNo").html(data[1]);//.currentpage
+						$("#totalPage").html(data[5]);
+						$("#totalCount").html(data[6]);
+						//$("#topagecount").val(data.currentpage);
+						//在表格添加数据 使用each方法遍历 控制器传回的数据中的list集合
+						$.each(data[0], function () {
+							var newid = this.id;
+							var tr = "<tr><td><a style='color:#000000;text-decoration:none;' href='/AssociationActivity/OneAssActivity/" + this.id + "' target='_blank'><span style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>" + this.activitytitle + "</span></a></td>"
+								+ "<td><div>负责人：" + this.personalincharge + "</div></td><td style='text-align:right;'><span>" + this.associationname + "-------" + this.create_time.ToString("yyyy年MM月dd日") + "</span><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'></div></td></tr>";//hh时mm分ss秒
+							//把每次遍历的一行数据 添加到 表格中
+							$("#assactable").append(tr);
+						});
+					} //可选参数
+				});
+			}
+			//显示Json中的数据
+			function createTable(json) {
+				//var data = eval(json);
+				//alert(data);
+				//for (var i = 0; i < data.length; i++) {
+				/*for (var i = 0; i < json.length; i++) {
+					o1 = json[i];
+					var row = $("<tr></tr>");
+					for (key in o1) {
+						var td = $("<td></td>");
+						td.text(o1[key].toString());
+						td.appendTo(row);
+					}
+					row.appendTo(table);
+				}
+				table.appendTo(admintb);*/
+				$.each(json, function () {
+					var tr = "<tr><td><a style='color:#000000;text-decoration:none;' href='/AssociationInform/OneAssInform/" + this.id + "' target='_blank'><div>" + (this.noticetitle.length > 11 ? this.noticetitle.substr(0, 10) + "..." : this.noticetitle)
+						+ "</div><div>" + this.associationname + "</div></a></td></tr>";
+					$("#noticetb").append(tr);
+				});
+				//}
+			}
+			/**************************************时间格式化处理************************************/
+			//往往json传过来的时间都是"/Date(1405056837780)/"
+			//转换需要的方法
+			String.prototype.ToString = function (format) {
+				var dateTime = new Date(parseInt(this.substring(6, this.length - 2)));
+				format = format.replace("yyyy", dateTime.getFullYear());
+				format = format.replace("yy", dateTime.getFullYear().toString().substr(2));
+				format = format.replace("MM", dateTime.getMonth() + 1);
+				format = format.replace("dd", dateTime.getDate());
+				format = format.replace("hh", dateTime.getHours());
+				format = format.replace("mm", dateTime.getMinutes());
+				format = format.replace("ss", dateTime.getSeconds());
+				format = format.replace("ms", dateTime.getMilliseconds());
+				return format;
+			};
+			//取得系统当前时间
+			function getTime() {
+				var myDate = new Date();
+				var date = myDate.toLocaleDateString();
+				var hours = myDate.getHours();
+				var minutes = myDate.getMinutes();
+				var seconds = myDate.getSeconds();
+				//$("#showDate").html(date + "\n" + hours + ":" + minutes + ":" + seconds); //将值赋给div
+			}
+		</script>
+	}
+</head>
+<body>
+	<input type="hidden" value="@ViewData["noticedtb"]" id="info" />
+	<div style="margin-top:11px;">
+		<div style="width:20%; float:left;">
+			<div style="background:#000000;color:#dadada;height:30px;line-height:30px;text-indent:11px;">最新通知&raquo;</div>
+			<table id="noticetb" class="table" style="background:#f1f0f0;">
+				<tbody></tbody>
+			</table>
+		</div>
+		<div style="width:80%; float:left;">
+			<div style="margin:0 11px;">
+				<div style="background:#defddb;color:#000000;text-indent:11px;">活动查看&raquo;</div>
+				<table class="table table-condensed" id="assactable">
+					<tbody></tbody>
+				</table>
+				<div class="displaybar">
+					<a href="">首页</a>
+					<a href="">上一页</a>
+					<a href="">下一页</a>
+					<a href="">末页</a>
+					第<span id="pageNo"></span>页/<span id="totalPage"></span>页,跳转到<input type="text" value="1" id="topagecount" style="min-width: 10px;border:1px #454545 solid;" size="2">页
+					<input type="button" value="跳转" onclick="getByPageBean(document.getElementById('topagecount').value)">
+					总条数:<span id="totalCount"></span>
+				</div>
+			</div>
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+</body>
+</html>

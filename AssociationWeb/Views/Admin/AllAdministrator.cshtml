@@ -1,0 +1,304 @@
+﻿
+@{
+	ViewBag.Title = "AllAdministrator";
+	Layout = "~/Views/Shared/Admin_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title - 系统管理员列表</title>
+	@section Scripts{
+		<script src="~/Scripts/jquery-3.3.1.js"></script>
+		<script type="text/javascript">
+			//onload
+			$(function () {
+				var jsonstr = eval(document.getElementById("jsonstr").value);
+				createTable(jsonstr);
+				/*var dtb = generateDtb();
+				//序列化对象
+				var postdata = JSON.stringify(dtb);
+				$.ajax({
+					type: "GET",
+					url: "~/Admin/AllAdministratorData",
+					data: null, //可选参数
+					dataType: "json",
+					success: function (data) {
+						var jsonstr = eval(data);
+						createTable(data);
+					} //可选参数
+				});*/
+			});
+			//显示Json中的数据
+			function createTable(json) {
+				/*for (var i = 0; i < json.length; i++) {
+					o1 = json[i];
+					var row = $("<tr></tr>");
+					for (key in o1) {
+						var td = $("<td></td>");
+						td.text(o1[key].toString());
+						td.appendTo(row);
+					}
+					row.appendTo(table);
+				}
+				table.appendTo(admintb);*/
+				$.each(json, function () {
+					var pwdstr = "*****";
+					//调用
+					var ctime = this.create_time.ToString("yyyy年MM月dd日hh时mm分ss秒");
+					var tr = "<tr><td><input type='checkbox' /></td><td>" + this.id + "</td><td>" + this.username + "</td><td>" + pwdstr + "</td><td>" +
+						ctime + "</td><td><a class='btn btn - primary btn - xs' href='javascript:firm(" + this.id + ");'>删除</a>&nbsp;<a class='btn btn - primary btn - xs' href='javascript:;' onclick=\"show('" + this.id + "','" + this.username + "','" + this.password +"')\">修改</a></td></tr>";
+					$("#admindata").append(tr);
+				});
+			}
+			//弹出一个询问框，有确定和取消按钮
+			function firm(id) {
+				//利用对话框返回的值 （true 或者 false）
+				if (confirm("点击了删除，确定要删除吗？")) {
+					//alert("点击了确定");
+					window.location.href = "/Admin/RealDelete/" + id;
+					return true;
+				} else {
+					//alert("点击了取消");
+					return false;
+				}
+	
+			}
+			function addpopdivbtn() {
+				var popupdiv = document.getElementById('addpopupdiv');
+				var over = document.getElementById('over');
+				popupdiv.style.display = "block";
+				over.style.display = "block";
+			}
+			function show(id, username, password) {
+				var popupdiv = document.getElementById('popupdiv');
+				var over = document.getElementById('over');
+				popupdiv.style.display = "block";
+				over.style.display = "block";
+				$("#uid").val(id);
+				$("#username").val(username);
+				$("#oldpassword").val(password);
+			}
+			function hideadmin() {
+				var popupdiv = document.getElementById('addpopupdiv');
+				var over = document.getElementById('over');
+				popupdiv.style.display = "none";
+				over.style.display = "none";
+			}
+			function hide() {
+				var popupdiv = document.getElementById('popupdiv');
+				var over = document.getElementById('over');
+				popupdiv.style.display = "none";
+				over.style.display = "none";
+			}
+			function updatepwd() {
+				var params = $("#updateform").serialize();
+				if ($("#newpassword").val() == "" || $("#newpasswordagain").val() == "") {
+					$("#updatemsg").html("不能为空！");
+				} else if ($("#newpassword").val() != $("#newpasswordagain").val()) {
+					$("#updatemsg").html("两次密码不一样！");
+				} else {
+					//序列化对象
+					//var postdata = JSON.stringify(dtb);
+					/*$.getJSON("/CampusNews/AllCampusNewsPage", { "pageno": pageno}, function (data) {
+					  }*/
+					$.ajax({
+						type: "POST",
+						url: "/Admin/UpdateAdminInfo",
+						data: params, //可选参数
+						dataType: "text",
+						success: function (data) {
+							$("#updatemsg").html(data);
+						} //可选参数
+					});
+				}
+			}
+			function addadmininfo() {
+				var params = $("#unform").serialize();
+				if ($("#username").val() == "" || $("#password").val() == "") {
+					$("#msgdiv").html("不能为空！");
+				} else {
+					//序列化对象
+					//var postdata = JSON.stringify(dtb);
+					/*$.getJSON("/CampusNews/AllCampusNewsPage", { "pageno": pageno}, function (data) {
+					  }*/
+					$.ajax({
+						type: "POST",
+						url: "/Admin/AddAdminInfo",
+						data: params, //可选参数
+						dataType: "text",
+						success: function (data) {
+							$("#msgdiv").html(data);
+							//window.location.reload();
+							$("#username").val() == "";
+							$("#password").val() == "";
+						} //可选参数
+					});
+				}
+			}
+			/**************************************时间格式化处理************************************/
+			//往往json传过来的时间都是"/Date(1405056837780)/"
+			//转换需要的方法
+			String.prototype.ToString = function (format) {
+				var dateTime = new Date(parseInt(this.substring(6, this.length - 2)));
+				format = format.replace("yyyy", dateTime.getFullYear());
+				format = format.replace("yy", dateTime.getFullYear().toString().substr(2));
+				format = format.replace("MM", dateTime.getMonth() + 1)
+				format = format.replace("dd", dateTime.getDate());
+				format = format.replace("hh", dateTime.getHours());
+				format = format.replace("mm", dateTime.getMinutes());
+				format = format.replace("ss", dateTime.getSeconds());
+				format = format.replace("ms", dateTime.getMilliseconds())
+				return format;
+			};
+			var all = document.getElementById("j_cbAll");
+			var tbody = document.getElementById("j_tb");
+			var checkboxs = tbody.getElementsByTagName("input");
+			all.onclick = function () {
+				for (var i = 0; i < checkboxs.length; i++) {
+					var checkbox = checkboxs[i];
+					checkbox.checked = this.checked;
+				}
+			};
+			for (var i = 0; i < checkboxs.length; i++) {
+				checkboxs[i].onclick = function () {
+					var isCheckedAll = true;
+					for (var i = 0; i < checkboxs.length; i++) {
+						if (!checkboxs[i].checked) {
+							isCheckedAll = false;
+							break;
+						}
+					}
+					all.checked = isCheckedAll;
+				};
+			}
+		</script>
+	}
+	<style>
+		#popupdiv {
+			display: none;
+			border: 2px solid #0094ff;
+			border-radius: 11px;
+			height: 70%;
+			width: 36%;
+			position: absolute; /*让节点脱离文档流,我的理解就是,从页面上浮出来,不再按照文档其它内容布局*/
+			top: 14%; /*节点脱离了文档流,如果设置位置需要用top和left,right,bottom定位*/
+			left: 33%;
+			z-index: 2; /*个人理解为层级关系,由于这个节点要在顶部显示,所以这个值比其余节点的都大*/
+			background: white;
+			text-indent: 11px;
+		}
+		#addpopupdiv {
+			display: none;
+			border: 2px solid #ff6a00;
+			border-radius: 6px;
+			height: 50%;
+			width: 36%;
+			position: absolute; /*让节点脱离文档流,我的理解就是,从页面上浮出来,不再按照文档其它内容布局*/
+			top: 23%; /*节点脱离了文档流,如果设置位置需要用top和left,right,bottom定位*/
+			left: 33%;
+			z-index: 2; /*个人理解为层级关系,由于这个节点要在顶部显示,所以这个值比其余节点的都大*/
+			background: white;
+			overflow: auto;
+			overflow-x: hidden;
+		}
+		#over {
+			width: 100%;
+			height: 100%;
+			opacity: 0.8; /*设置背景色透明度,1为完全不透明,IE需要使用filter:alpha(opacity=80);*/
+			filter: alpha(opacity=80);
+			display: none;
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 1;
+			background: silver;
+		}
+	</style>
+</head>
+<body>
+	<div style="text-align:center;margin:4px 11px;">
+		<h4>所有管理员信息</h4>
+		<div style="margin:4px auto;"><button type="button" class="btn btn-default" onclick="addpopdivbtn()">添加新的管理员</button></div>
+		<input value="@ViewData["alladmin"]" type="hidden" id="jsonstr" />
+		<table class="table table-bordered" id="admindata">
+			<thead><tr class="success"><td><input type="checkbox" id="j_cbAll" /></td><td>编号</td><td>用户名</td><td>密码</td><td>注册时间</td><td>操作</td></tr></thead>
+			<tbody id="j_tb"></tbody>
+		</table>
+	</div>
+	<div id="addpopupdiv">
+		<a href="javascript:hideadmin()" style="float:right;position:relative;right:6px;top:4px;">关闭</a>
+		<div style="clear:both;">
+			<form class="form-horizontal" id="unform">
+				<div class="form-group">
+					<label class="col-sm-2 control-label">用户名</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" name="username" id="username" placeholder="username" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">密码</label>
+					<div class="col-sm-10">
+						<input type="password" class="form-control" name="password" id="password" placeholder="password" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div id="msgdiv"></div>
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="button" style="display:none;" class="btn btn-default" onclick="hideadmin()">关闭</button>&nbsp;&nbsp;<button type="button" id="agreejoinbtn" class="btn btn-default" onclick="addadmininfo()">添加新管理员</button>&nbsp;&nbsp;<button type="button" style="display:none;" class="btn btn-default" onclick="onupbtn()">修改</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div id="popupdiv">
+		<a href="javascript:hide()" style="float:right;position:relative;right:6px;top:4px;">关闭</a>
+		<div style="clear:both;">
+			<form class="form-horizontal" id="updateform">
+				<div class="form-group">
+					<input type="hidden" name="uid" id="uid" />
+				</div>
+				<div class="form-group">
+					<label for="username" class="col-sm-2 control-label">账号</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" name="username" id="username" placeholder="username" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">密码</label>
+					<div class="col-sm-10">
+						<input type="password" class="form-control" name="oldpassword" id="oldpassword" placeholder="oldpassword" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">新密码</label>
+					<div class="col-sm-10">
+						<input type="password" class="form-control" name="newpassword" id="newpassword" placeholder="newpassword" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">确认新密码</label>
+					<div class="col-sm-10">
+						<input type="password" class="form-control" name="newpasswordagain" id="newpasswordagain" placeholder="newpasswordagain" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10">
+						<div id="updatemsg">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-default" onclick="hide()">取消</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default" onclick="updatepwd()">修改</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div id="over"></div>
+</body>
+</html>

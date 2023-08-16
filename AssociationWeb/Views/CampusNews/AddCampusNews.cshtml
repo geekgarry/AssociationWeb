@@ -1,0 +1,104 @@
+﻿
+@{
+	ViewBag.Title = "AddCampusNews";
+	Layout = "~/Views/Shared/Admin_Layout.cshtml";
+}
+@section Scripts{
+	<script src="~/Scripts/jquery-3.3.1.js"></script>
+	<script type="text/javascript">
+			//onload
+			$(function () {
+				//setInterval("getTime();", 1000); //每隔一秒运行一次
+				//alert(document.getElementById("info").value);
+				//getByPageBean(1);
+				/*var dtb = generateDtb();
+				//序列化对象
+				var postdata = JSON.stringify(dtb);
+				$.ajax({
+					type: "GET",
+					url: "~/Admin/AllAdministratorData",
+					data: null, //可选参数
+					dataType: "json",
+					success: function (data) {
+						var jsonstr = eval(data);
+						createTable(data);
+					} //可选参数
+				});*/
+			});
+		function addformbtn() {
+			var params = $("#addnewform").serialize();
+			if ($("#newtitle").val() == "" || $("#newcontent").val()== "") {
+				$("#addmsg").html("不能为空！");
+			}else {
+				$.ajax({
+					type: "post",
+					url: "/CampusNews/AddCampusNewsAction",
+					data: params, //可选参数
+					dataType: "text",
+					success: function (data) {
+						$("#addmsg").html(data);
+						resetbtn();
+					} //可选参数
+				});
+			}
+		}
+		function resetbtn() {
+			$("#newtitle").val("");
+			$("#newcontent").val("");
+		}
+			/**************************************时间格式化处理************************************/
+			//往往json传过来的时间都是"/Date(1405056837780)/"
+			//转换需要的方法
+			String.prototype.ToString = function (format) {
+				var dateTime = new Date(parseInt(this.substring(6, this.length - 2)));
+				format = format.replace("yyyy", dateTime.getFullYear());
+				format = format.replace("yy", dateTime.getFullYear().toString().substr(2));
+				format = format.replace("MM", dateTime.getMonth() + 1);
+				format = format.replace("dd", dateTime.getDate());
+				format = format.replace("hh", dateTime.getHours());
+				format = format.replace("mm", dateTime.getMinutes());
+				format = format.replace("ss", dateTime.getSeconds());
+				format = format.replace("ms", dateTime.getMilliseconds());
+				return format;
+			};
+			//取得系统当前时间
+			function getTime() {
+				var myDate = new Date();
+				var date = myDate.toLocaleDateString();
+				var hours = myDate.getHours();
+				var minutes = myDate.getMinutes();
+				var seconds = myDate.getSeconds();
+				//$("#showDate").html(date + "\n" + hours + ":" + minutes + ":" + seconds); //将值赋给div
+			}
+	</script>
+}
+<div style="margin:5px 11px;">
+	<div>
+		<form class="form-horizontal" id="addnewform">
+			<input type="text" name="edid" id="edid" value="@Session["id"]" style="display:none;"/>
+			<input type="text" name="edname" id="edname" value="@Session["adminid"]" style="display:none;"/>
+			<div class="form-group">
+				<label for="title" class="col-sm-2 control-label">标题</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" name="newtitle" id="newtitle" placeholder="title" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">内容</label>
+				<div class="col-sm-10">
+					<textarea class="form-control" name="newcontent" id="newcontent" rows="5" placeholder="newcontent" ></textarea>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-10" id="addmsg" style="text-align:center;">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="reset" class="btn btn-default" onclick="resetbtn()">重写</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default" onclick="addformbtn()">发布</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+

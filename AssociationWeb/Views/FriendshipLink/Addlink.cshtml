@@ -1,0 +1,75 @@
+﻿
+@{
+	ViewBag.Title = "Addlink";
+	Layout = "~/Views/Shared/Admin_Layout.cshtml";
+}
+@section Scripts{
+	<script src="~/Scripts/jquery-3.3.1.js"></script>
+	<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript">
+		//onload
+		/*function createaccTable(jsonstr) {
+			var commennttable = $("#acccommentdtb");
+			$.each(jsonstr, function () {
+				var tr = "<tr><td><a style='color:#000000;text-decoration:none;' href='/AssociationActivity/OneAssActivity/" + this.associationactivityid + "' target='_blank'><span style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>" + (this.activitytitle.length > 24 ? this.activitytitle.substr(0, 22) + "..." : this.activitytitle) +
+					"</span></a><div>评论：" + this.activitycomment + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + this.create_time.ToString("yyyy年MM月dd日") + "</div></td></tr>";
+				commennttable.append(tr);
+			});
+		}*/
+		function onaddlinkbtn() {
+			var params = $("#unform").serialize();
+			if ($("#linkname").val() == "" || $("#linkurl").val() == "") {
+				$("#msgdiv").html("不能为空！");
+			} else {
+				$.ajax({
+					type: "post",
+					url: "/FriendshipLink/UpdateCampusNews",
+					data: params, //可选参数
+					dataType: "text",
+					success: function (data) {
+						$("#msgdiv").html(data);
+						window.location.reload();
+					} //可选参数
+				});
+			}
+		}
+		/**************************************时间格式化处理************************************/
+		//往往json传过来的时间都是"/Date(1405056837780)/"
+		//转换需要的方法
+		String.prototype.ToString = function (format) {
+			var dateTime = new Date(parseInt(this.substring(6, this.length - 2)));
+			format = format.replace("yyyy", dateTime.getFullYear());
+			format = format.replace("yy", dateTime.getFullYear().toString().substr(2));
+			format = format.replace("MM", dateTime.getMonth() + 1);
+			format = format.replace("dd", dateTime.getDate());
+			format = format.replace("hh", dateTime.getHours());
+			format = format.replace("mm", dateTime.getMinutes());
+			format = format.replace("ss", dateTime.getSeconds());
+			format = format.replace("ms", dateTime.getMilliseconds());
+			return format;
+		};
+	</script>
+}
+<div style="margin:5px 11px;">
+	<h4 style="text-align:center;">添加友情链接</h4>
+	<form class="form-horizontal" id="unform">
+		<div class="form-group">
+			<label class="col-sm-2 control-label">链接</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" name="linkname" id="linkname" placeholder="linkname" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">地址</label>
+			<div class="col-sm-10">
+				<input type="password" class="form-control" name="linkurl" id="linkurl" placeholder="linkurl" />
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div id="msgdiv"></div>
+				<button type="button" class="btn btn-default" onclick="onaddlinkbtn()">添加</button>
+			</div>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,203 @@
+﻿
+@{
+	ViewBag.Title = "UpdateStuMemberPwd";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+	<script src="~/Scripts/jquery-3.3.1.js"></script>
+	<script type="text/javascript">
+		//onload
+		$(function () {
+			//setInterval("getTime();", 1000); //每隔一秒运行一次
+			/*var dtb = generateDtb();
+			*/
+		});
+		//弹出一个询问框，有确定和取消按钮
+		/*function firm(assid) {
+			//利用对话框返回的值 （true 或者 false）
+			if (confirm("点击了删除，确定要删除吗？")) {
+				//alert("点击了确定");
+				window.location.href = "Association/Delete/" + assid;
+				return true;
+			} else {
+				//alert("点击了取消");
+				return false;
+			}
+
+		}*/
+		function updatepwd() {
+			var params = $("#updatepwdform").serialize();
+			var oldpwd = document.getElementById("oldpwd").value;
+			if ($("#oldpwd").val() == "" || $("#newpwd").val() == "" || $("#newpwdagain").val() == "") {
+				$("#updatemsg").html("不能为空！");
+			} else if ($("#newpwdagain").val() != $("#newpwd").val()) {
+				$("#updatemsg").html("两次密码不一样！");
+			} else {
+				//序列化对象
+				//var postdata = JSON.stringify(dtb);
+				$.ajax({
+					type: "POST",
+					url: "/StuMember/UpdateStuMemberPwd",
+					data: params, //可选参数
+					dataType: "text",
+					success: function (data) {
+						$("#updatemsg").html(data);
+					} //可选参数
+				});
+			}
+		}
+		/**************************************时间格式化处理************************************/
+		//往往json传过来的时间都是"/Date(1405056837780)/"
+		//转换需要的方法
+		String.prototype.ToString = function (format) {
+			var dateTime = new Date(parseInt(this.substring(6, this.length - 2)));
+			format = format.replace("yyyy", dateTime.getFullYear());
+			format = format.replace("yy", dateTime.getFullYear().toString().substr(2));
+			format = format.replace("MM", dateTime.getMonth() + 1);
+			format = format.replace("dd", dateTime.getDate());
+			format = format.replace("hh", dateTime.getHours());
+			format = format.replace("mm", dateTime.getMinutes());
+			format = format.replace("ss", dateTime.getSeconds());
+			format = format.replace("ms", dateTime.getMilliseconds());
+			return format;
+		};
+		//取得系统当前时间
+		function getTime() {
+			var myDate = new Date();
+			var date = myDate.toLocaleDateString();
+			var hours = myDate.getHours();
+			var minutes = myDate.getMinutes();
+			var seconds = myDate.getSeconds();
+			//$("#showDate").html(date + "\n" + hours + ":" + minutes + ":" + seconds); //将值赋给div
+		}
+	</script>
+}
+<style>
+	.myinfoul {
+		width: 99%;
+		margin: 0 auto;
+		background: #fefefe;
+		display: block;
+	}
+
+	.myinfoul li {
+		list-style: none;
+		width: 100%;
+		height: 36px;
+		line-height: 36px;
+		text-align: left;
+		text-indent: 11px;
+		font-size: 16px;
+		display: block;
+	}
+
+	.myinfoul li a {
+		width: 98%;
+		text-decoration: none;
+		color: #000000;
+		display: block;
+	}
+
+	.myinfoul li a:hover {
+		color: #000000;
+		background: #a4a4a4;
+	}
+
+	.myinfoul li a:active {
+		background: #a8a8a8;
+		color: #fcfcfc;
+	}
+
+	.personalinfo div {
+		height: 35px;
+		line-height: 35px;
+		font-size: 15px;
+	}
+
+	.personalinfo span {
+		text-align: right;
+		float: right;
+		position: relative;
+		right: 11px;
+	}
+
+	.personalinfo a {
+		text-decoration: none;
+		text-align: center;
+	}
+</style>
+<div style="margin-top:11px;">
+	<div style="width:20%; float:left;">
+		<!--<table id="appdtb" class="table" style="background:#f1f0f0;">
+			<tbody></tbody>
+		</table>-->
+		<ul class="myinfoul">
+			<li><a href="/StuMember/MyStuInfo/@ViewData["id"]">个人资料</a></li>
+			<li><a href="/StuMember/MyAssociation/@ViewData["id"]">我的社团</a></li>
+			<li><a href="/StuMember/UpdateStuMemberPwd/@ViewData["id"]">修改密码</a></li>
+			<li><a href="/StuMember/MyStuAcComment">我的评论</a></li>
+			<li><a href="/Apprise/MyStuApprise">我的评价</a></li>
+			<li><a href="/ApplyJoin/MyStuApplyJoin">我的申请</a></li>
+			<li><a href="/First/LogoutUser">退出系统</a></li>
+		</ul>
+	</div>
+	<div style="width:80%; float:left;background:#fefefe;">
+		<div style="margin:0 11px;height:55px; line-height:55px;">
+			<h3>修改密码</h3>
+			<hr />
+		</div>
+		<div style="margin-left:11px;">
+			<img src="~/images/asslogo2.jpg" alt="社团组织联合网" class="img-circle" style="width:110px;height:110px;">
+			<div class="personalinfo">
+				<form class="form-horizontal" id="updatepwdform">
+					@{
+						try
+						{
+							//string userid = Session["userid"].ToString();
+							if (Session["userid"] == null)
+							{
+								Response.Write("<script>alert('没有登录！请先登录');window.location.href='/First/StuLogin';</script>");
+							}
+						}
+						catch (Exception e)
+						{
+							Response.Write("<script>alert('" + e.Message + "');window.location.href='/First/StuLogin';</script>");
+						}
+					}
+					<div class="form-group">
+						<input type="hidden" value="@ViewData["id"]" name="id" />
+						<label for="oldpwd" class="col-sm-2 control-label">旧密码</label>
+						<div class="col-sm-10">
+							<input type="password" class="form-control" name="oldpwd" id="oldpwd" placeholder="旧密码" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="oldpwd" class="col-sm-2 control-label">新密码</label>
+						<div class="col-sm-10">
+							<input type="password" class="form-control" name="password" id="newpwd" placeholder="新密码" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="oldpwd" class="col-sm-2 control-label">确认新密码</label>
+						<div class="col-sm-10">
+							<input type="password" class="form-control" name="newpwdagain" id="newpwdagain" placeholder="确认新密码" />
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-10">
+							<div id="updatemsg">
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="button" class="btn btn-default" onclick="updatepwd()">修改</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div style="clear:both;"></div>
+</div>
+

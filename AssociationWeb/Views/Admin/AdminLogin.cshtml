@@ -1,0 +1,48 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>AdminLogin</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@Scripts.Render("~/bundles/modernizr")
+	<style type="text/css">
+	</style>
+</head>
+<body>
+	<div style="text-align:center;">
+		<h2>管理员登录</h2>
+		<br />
+		<br />
+		<br />
+		<form class="form-inline" action="~/Admin/AdminLogin" method="post">
+			<div class="form-group">
+				<label class="sr-only" for="exampleInputEmail3">用户名：</label>
+				<input type="text" class="form-control" id="exampleInputUserid3" name="userid" placeholder="Userid">
+			</div>
+			<div class="form-group">
+				<label class="sr-only" for="exampleInputPassword3">密码：</label>
+				<input type="password" class="form-control" id="exampleInputPassword3" name="password" placeholder="Password">
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox"> 记住我
+				</label>
+			</div>
+			<button type="submit" class="btn btn-default">登录</button>
+		</form>
+		<div>
+			@ViewBag.LoginStatus
+		</div>
+	</div>
+</body>
+</html>

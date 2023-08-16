@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title - 社团组织联合会</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+	@section Scripts{
+		<script src="~/Scripts/jquery-3.3.1.js"></script>
+		<script>
+			$(function () {
+				var myDate = new Date();
+				var day = myDate.getDay();
+				var weeks = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
+				var week = weeks[day];
+				$("#showweekdays").html(week);
+				setInterval("getTime();", 1000); //每隔一秒运行一次
+			});
+			//取得系统当前时间
+			function getTime() {
+				var myDate = new Date();
+				var date = myDate.toLocaleDateString();
+				var hours = myDate.getHours();
+				var minutes = myDate.getMinutes();
+				var seconds = myDate.getSeconds();
+				$("#showDate").html(date + "\n" + hours + ":" + minutes + ":" + seconds); //将值赋给div
+			}
+			function getWeekDate() {
+				var now = new Date();
+				var day = now.getDay();
+				var weeks = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
+				var week = weeks[day];
+				return week;
+			}
+			function week() {
+				var weekday = new Array(7)
+				weekday[0] = "星期天"
+				weekday[1] = "星期一"
+				weekday[2] = "星期二"
+				weekday[3] = "星期三"
+				weekday[4] = "星期四"
+				weekday[5] = "星期五"
+				weekday[6] = "星期六"
+
+				return weekday[d.getDay()];
+			}
+			function week() {
+				var weekday = d.getDay();
+				switch (weekday) {
+					case 0:
+						return "星期天";
+						break;
+					case 1:
+						return "星期一";
+						break;
+					case 2:
+						return "星期二";
+						break;
+					case 3:
+						return "星期三";
+						break;
+					case 4:
+						return "星期四";
+						break;
+					case 5:
+						return "星期五";
+						break;
+					case 6:
+						return "星期六";
+						break;
+					default:
+						return false;
+						break;
+				}
+			}
+		</script>
+	}
+</head>
+<body style="background:#f5f5f5;">
+	<div style="position:relative;margin-top:-50px;padding-top:0px;" class="">
+		<div class="container">
+			<div class="navbar-header">
+				<a href="/First/AssMain" style="margin: 0 0;padding: 0 0;">
+					<img alt="社团组织联合会" src="~/images/asslogo1.jpg" />
+				</a>
+				<!--Html.ActionLink("社团组织联合会", "AssMain", "First", new { area = "" }, new { class = "navbar-brand" })-->
+			</div>
+			<div style="text-align:right;">
+				<span id="showDate"></span>&nbsp;&nbsp;&nbsp;
+				<span id="showweekdays"></span>&nbsp;&nbsp;
+				欢迎您！
+				<a href="/StuMember/MyStuInfo/@Session["userid"]" target="_blank">
+					@Session["userid"]
+				</a>
+				&nbsp;&nbsp;
+			</div>
+		</div>
+	</div>
+	<div class="navbar navbar-inverse" style="margin:0 auto;">
+		<div class="container">
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li>@Html.ActionLink("主页", "AssMain", "First")</li>
+					<li>@Html.ActionLink("校园新闻", "AllCampusNews", "CampusNews")</li>
+					<li>@Html.ActionLink("社团活动", "AllAssActivity", "AssociationActivity")</li>
+					<li>@Html.ActionLink("校园通知", "AllInform", "AssociationInform")</li>
+					<li>@Html.ActionLink("社团信息展示", "AllAssociation", "Association")</li>
+					<li>@Html.ActionLink("资料下载", "AllResource", "FileResource")</li>
+					<li>@Html.ActionLink("社团申请", "AddApplyJoin", "ApplyJoin")</li>
+					<li>@Html.ActionLink("在线评价", "AddApprise", "Apprise")</li>
+					<li>@Html.ActionLink("在线注册", "AddStuMember", "StuMember")</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		@RenderBody()
+	</div>
+	<br />
+	<div class="container body-content">
+		<hr />
+		<footer>
+			<p>&copy; @DateTime.Now.Year - 社团组织管理系统</p>
+			<p>版权所有-geektech Powered By 极客工作室 官方网址：<a href="http://xxx.xxx">极客科技实验室</a></p>
+		</footer>
+	</div>
+
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@RenderSection("scripts", required: false)
+</body>
+</html>

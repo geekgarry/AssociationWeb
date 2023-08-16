@@ -1,0 +1,235 @@
+﻿
+@{
+	ViewBag.Title = "OneAssActivity";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+	<script src="~/Scripts/jquery-3.3.1.js"></script>
+	<script type="text/javascript">
+			//onload
+			$(function () {
+				//setInterval("getTime();", 1000); //每隔一秒运行一次
+				var jsonstr = eval(document.getElementById("info").value);
+				var commentinfo = eval(document.getElementById("commentinfo").value);
+				//alert(document.getElementById("commentinfo").value);
+				//getByPageBean(1);
+				createTable(jsonstr);
+				createaccommentTable(commentinfo);
+				//getaboutaccomment();
+				/*var dtb = generateDtb();
+				//序列化对象
+				var postdata = JSON.stringify(dtb);
+				$.ajax({
+					type: "GET",
+					url: "~/Admin/AllAdministratorData",
+					data: null, //可选参数
+					dataType: "json",
+					success: function (data) {
+						var jsonstr = eval(data);
+						createTable(data);
+					} //可选参数
+				});*/
+			});
+			//function getByPageBean(pageNo){
+			//设置表单的 页号参数
+			//$("[name=pageNo]").val(pageNo);
+			/*表单数据 序列化-->表单中有个隐藏域 储存的是 页号
+       	 		 * 每次异步刷新的是表格信息
+        		 *表单中的数据不会变动
+           		 *根据方法的  pageNo 参数的变动
+           		*查询不同页号的 信息
+			 */
+			/*var pageno;
+			if (pageNo == null) {
+				pageno = 1;
+			}
+			pageno = pageNo;
+			//var params= $("#selectName").serialize();
+			//ajax请求 中间的data表示为{ pageNo: 1 }Url.Action("AllCampusNewsPage", "CampusNews")
+			/*$.getJSON("/CampusNews/AllCampusNewsPage", { "pageno": pageno}, function (data) {
+				//删除表格之前数据(标题栏除外)--->防止出现几页的数据叠加的情况
+				$("#newtable tr").not(":first").remove();
+				 //设置上一页 下一页连接
+				$(".displaybar a:eq(0)").attr("href","javascript:getByPageBean(1)");
+				$(".displaybar a:eq(1)").attr("href", "javascript:getByPageBean(" + data.hasprevious+")");
+				$(".displaybar a:eq(2)").attr("href", "javascript:getByPageBean(" + data.hasnext+")");
+				$(".displaybar a:eq(3)").attr("href", "javascript:getByPageBean(" + data.totalpagesize+")");
+				 //设置显示信息(当前页号,总页号,总条数)
+				$("#pageNo").html(data.currentpage);
+				$("#totalPage").html(data.totalpagesize);
+				$("#totalCount").html(data.totalsize);
+				 //$("#topagecount").val(data.currentpage);
+				 //在表格添加数据 使用each方法遍历 控制器传回的数据中的list集合
+				$.each(data.arrayListpage, function () {
+					var newid = this.id;
+					var tr = "<tr height='32'><td><div>" + this.newtitle + "</div><div>" + this.create_time +"</div></td></tr>";
+					//把每次遍历的一行数据 添加到 表格中
+					$("#newtable").append(tr);
+				});
+				});*/
+			//}
+			//显示Json中的数据
+			function createTable(json) {
+				//var data = eval(json);
+				//alert(data);
+				//for (var i = 0; i < data.length; i++) {
+				/*for (var i = 0; i < json.length; i++) {
+					o1 = json[i];
+					var row = $("<tr></tr>");
+					for (key in o1) {
+						var td = $("<td></td>");
+						td.text(o1[key].toString());
+						td.appendTo(row);
+					}
+					row.appendTo(table);
+				}
+				table.appendTo(admintb);*/
+				$.each(json, function () {
+					var tr = "<tr><td><a style='color:#000000;text-decoration:none;' href='/AssociationActivity/OneAssActivity/" + this.id + "' target='_blank'><span style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>" + (this.activitytitle.length > 10 ? this.activitytitle.substr(0, 9) + "..." : this.activitytitle) + "</span><div>负责人："
+						+ this.personalincharge + "</div><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>" + this.create_time.ToString("yyyy年MM月dd日") + "</div></a></td></tr>";
+					$("#assacdtb").append(tr);
+				});
+				//}
+		}
+		function createaccommentTable(json) {
+			$("#accommenttb tr").remove();
+			$.each(json, function () {
+				var tr = "<tr><td><a style='color:#000000;text-decoration:none;' href='/StuMember/OpenedPersonalInfo/" + this.stuid + "' target='_blank'><span>" + this.realname + "：</span></a><a style='color:#000000;text-decoration:none;' href='/ActivityComment/OneAcComment/" + this.id + "' target='_blank'><span style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>" + (this.activitycomment.length > 25 ? this.activitycomment.substr(0, 22) + "..." : this.activitycomment) + "</span></a>" +
+					"<span style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(" + this.create_time.ToString("yyyy年MM月dd日") + ")</span></td></tr>";
+				$("#accommenttb").append(tr);
+			});
+		}
+		/*function getaboutaccomment() {
+			$.getJSON("/ActivityComment/AboutActivityComment", { "acid":  }, function (data) {
+				var json = eval(data);
+				//alert(data);
+				$.each(json, function () {
+					var tr = "<tr><td><a style='color:#000000;text-decoration:none;' href='/StuMember/OpenedPersonalInfo/" + this.stuid + "' target='_blank'><span>" + this.realname + ":</span></a><a style='color:#000000;text-decoration:none;' href='/ActivityComment/OneAcComment/" + this.id + "' target='_blank'><span style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>" + (this.activitytitle.length > 10 ? this.activitytitle.substr(0, 9) + "..." : this.activitycomment) + "</span></a>" +
+						"<div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>" + this.create_time.ToString("yyyy年MM月dd日") + "</div></td></tr>";
+					$("#accomment").append(tr);
+				});
+			});
+		}*/
+		function addcomment() {
+			//序列化对象
+			var params = $("#addcommentform").serialize();
+			$.ajax({
+				type: "post",
+				url: "/ActivityComment/AddActivityComment",
+				data: params, //可选参数
+				dataType: "text",
+				success: function (data) {
+					$("#addaccmsg").html(data);
+					//$("#accomment").val() = "";
+					window.location.reload();
+				} //可选参数
+			});
+		}
+		function onaddtext() {
+			$("#accomment").attr("rows", 3);
+			$("#addaccdiv").css("display","block");
+		}
+		function onclosetext() {
+			$("#accomment").attr("rows", 1);
+			$("#addaccdiv").css("display", "none");
+		}
+			/**************************************时间格式化处理************************************/
+			//往往json传过来的时间都是"/Date(1405056837780)/"
+			//转换需要的方法
+			String.prototype.ToString = function (format) {
+				var dateTime = new Date(parseInt(this.substring(6, this.length - 2)));
+				format = format.replace("yyyy", dateTime.getFullYear());
+				format = format.replace("yy", dateTime.getFullYear().toString().substr(2));
+				format = format.replace("MM", dateTime.getMonth() + 1);
+				format = format.replace("dd", dateTime.getDate());
+				format = format.replace("hh", dateTime.getHours());
+				format = format.replace("mm", dateTime.getMinutes());
+				format = format.replace("ss", dateTime.getSeconds());
+				format = format.replace("ms", dateTime.getMilliseconds());
+				return format;
+			};
+			//取得系统当前时间
+			function getTime() {
+				var myDate = new Date();
+				var date = myDate.toLocaleDateString();
+				var hours = myDate.getHours();
+				var minutes = myDate.getMinutes();
+				var seconds = myDate.getSeconds();
+				//$("#showDate").html(date + "\n" + hours + ":" + minutes + ":" + seconds); //将值赋给div
+			}
+	</script>
+}
+<style>
+	#addaccdiv {
+		display: none;
+	}
+</style>
+<input type="hidden" value="@ViewData["assacdtb"]" id="info" />
+<input type="hidden" value="@ViewData["accommentdtb"]" id="commentinfo" />
+<div style="margin-top:11px;">
+	<div style="width:20%; float:left;">
+		<div style="background:#000000;color:#dadada;height:30px;line-height:30px;text-indent:11px;">最新活动&raquo;</div>
+		<table id="assacdtb" class="table" style="background:#f1f0f0;">
+			<tbody></tbody>
+		</table>
+	</div>
+	<div style="width:80%; float:left;">
+		<div style="margin:0 11px;">
+			<div>
+				<!--ViewData["acid"]
+				ViewData["assid"]-->
+				<h3 class="modal-title">@ViewData["actitle"]</h3>
+				<p>
+					@ViewData["assname"]
+					------------------------
+					@ViewData["ctime"]
+				</p>
+				<div>@ViewData["perincharge"]</div>
+				<div>
+					@ViewData["accontent"]
+				</div>
+			</div>
+		</div>
+		<div style="margin:5px; 11px;">
+			<form class="form-horizontal" id="addcommentform">
+				<input type="text" value="@Session["userid"]" name="stuid" style="display:none;" />
+				<input type="text" value="@ViewData["acid"]" name="acid" style="display:none;" />
+				@{
+					try
+					{
+						//string userid = Session["userid"].ToString();
+						if (Session["userid"] == null)
+						{
+							Response.Write("<script>alert('没有登录！请先登录');window.location.href='/First/StuLogin';</script>");
+						}
+					}
+					catch (Exception e)
+					{
+						Response.Write("<script>alert('" + e.Message + "');window.location.href='/First/StuLogin';</script>");
+					}
+				}
+				<div class="form-group" style="position:relative;left:0px;">
+					<label for="oldpwd" class="col-sm-2 control-label">发评论</label>
+					<div class="col-sm-10">
+						<textarea class="form-control" rows="1" id="accomment" name="accomment" onfocus="onaddtext()"></textarea>
+						<div id="addaccmsg"></div>
+					</div>
+				</div>
+				<div class="form-group" id="addaccdiv">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-default" onclick="addcomment()" onblur="onclosetext()">发表评论</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div style="margin:0 11px;">
+			<div>
+				<table id="accommenttb" class="table" style="background:#fefefe; width:100%;margin:0 auto;">
+					<tbody></tbody>
+				</table>
+				<div style="text-align:center;"><a href="javascript:;" onclick="">查看更多&darr;</a></div>
+			</div>
+		</div>
+	</div>
+	<div style="clear:both;"></div>
+</div>

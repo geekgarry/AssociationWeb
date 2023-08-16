@@ -1,0 +1,256 @@
+﻿
+@{
+	ViewBag.Title = "Index";
+	Layout = "~/Views/Shared/Admin_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>社团组织联合官网-管理员端-新闻管理</title>
+	@section Scripts{
+		<script src="~/Scripts/jquery-3.3.1.js"></script>
+		<script type="text/javascript">
+			//onload
+			$(function () {
+				var jsonstr = eval($("#info").val());
+				//setInterval("getTime();", 1000); //每隔一秒运行一次
+				createTable(jsonstr);
+				/*var dtb = generateDtb();
+				//序列化对象
+				var postdata = JSON.stringify(dtb);
+				$.ajax({
+					type: "GET",
+					url: "~/Admin/AllAdministratorData",
+					data: null, //可选参数
+					dataType: "json",
+					success: function (data) {
+						var jsonstr = eval(data);
+						createTable(data);
+					} //可选参数
+				});*/
+			});
+			//弹出一个询问框，有确定和取消按钮
+			function deletebtn(id) {
+				//利用对话框返回的值 （true 或者 false）
+				if (confirm("点击了删除，确定要删除吗？")) {
+					//alert("点击了确定");
+					//window.location.href = "Association/Delete/" + assid;
+					$.ajax({
+						type: "post",
+						url: "/FriendshipLink/DeleteFriendshipLink",
+						data: {"id":id}, //可选参数
+						dataType: "text",
+						success: function (data) {
+							alert(data);
+							window.location.reload();
+						} //可选参数
+					});
+					return true;
+				} else {
+					//alert("点击了取消");
+					return false;
+				}
+
+			}
+			function onupbtn() {
+				var params = $("#unform").serialize();
+				if ($("#ntitle").val() == "" || $("#ncontent").val() == "") {
+					$("#msgdiv").html("不能为空！");
+				} else {
+					$.ajax({
+						type: "post",
+						url: "/FriendshipLink/UpdateFriendshipLink",
+						data: params, //可选参数
+						dataType: "text",
+						success: function (data) {
+							$("#msgdiv").html(data);
+							window.location.reload();
+						} //可选参数
+					});
+				}
+			}
+			function show(nid, nurlname, nurl) {
+				var popupdiv = document.getElementById('popupdiv');
+				var over = document.getElementById('over');
+				popupdiv.style.display = "block";
+				over.style.display = "block";
+				$("#nid").val(nid);
+				$("#ntitle").val(nurlname);
+				$("#ncontent").val(nurl);
+			}
+			/*function openurl(assid) {
+				href.location = "/Association/OneAssInfoAdmin/" + assid;
+			}*/
+			function hide() {
+				var popupdiv = document.getElementById('popupdiv');
+				var over = document.getElementById('over');
+				popupdiv.style.display = "none";
+				over.style.display = "none";
+			}
+			function createTable(jsonstr) {
+				var commennttable = $("#datatable");
+				$.each(jsonstr, function () {
+					var tr = "<tr height='32'><td><input type='checkbox' /></td><td><div><a style='color:#000000;text-decoration:none;' href='' target='_blank'>" + this.linkname+ "</a></div></td><td><div>" +this.linkurl + "</div></td>" +
+						"<td><button type='button' class='btn btn -default btn - xs' onclick=\"deletebtn('" + this.id + "')\">删除</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type='button' class='btn btn -default btn - xs' onclick=\"show('" + this.id + "','" + this.linkname + "','" + this.linkurl + "')\">详情</button></td></tr>";//&quot;&quot;
+					commennttable.append(tr);
+				});
+			}
+			/**************************************时间格式化处理************************************/
+			//往往json传过来的时间都是"/Date(1405056837780)/"
+			//转换需要的方法
+			String.prototype.ToString = function (format) {
+				var dateTime = new Date(parseInt(this.substring(6, this.length - 2)));
+				format = format.replace("yyyy", dateTime.getFullYear());
+				format = format.replace("yy", dateTime.getFullYear().toString().substr(2));
+				format = format.replace("MM", dateTime.getMonth() + 1);
+				format = format.replace("dd", dateTime.getDate());
+				format = format.replace("hh", dateTime.getHours());
+				format = format.replace("mm", dateTime.getMinutes());
+				format = format.replace("ss", dateTime.getSeconds());
+				format = format.replace("ms", dateTime.getMilliseconds());
+				return format;
+			};
+			//取得系统当前时间
+			function getTime() {
+				var myDate = new Date();
+				var date = myDate.toLocaleDateString();
+				var hours = myDate.getHours();
+				var minutes = myDate.getMinutes();
+				var seconds = myDate.getSeconds();
+				//$("#showDate").html(date + "\n" + hours + ":" + minutes + ":" + seconds); //将值赋给div
+			}
+			var all = document.getElementById("j_cbAll");
+			var tbody = document.getElementById("j_tb");
+			var checkboxs = tbody.getElementsByTagName("input");
+			all.onclick = function () {
+				for (var i = 0; i < checkboxs.length; i++) {
+					var checkbox = checkboxs[i];
+					checkbox.checked = this.checked;
+				}
+			};
+			for (var i = 0; i < checkboxs.length; i++) {
+				checkboxs[i].onclick = function () {
+					var isCheckedAll = true;
+					for (var i = 0; i < checkboxs.length; i++) {
+						if (!checkboxs[i].checked) {
+							isCheckedAll = false;
+							break;
+						}
+					}
+					all.checked = isCheckedAll;
+				};
+			}
+		</script>
+	}
+	<style>
+		#datatable {
+			width: 98%;
+			margin: 5px auto 0;
+		}
+
+		table {
+			border-collapse: collapse;
+			border-spacing: 0;
+			border: 1px solid #c0c0c0;
+			width: 300px;
+		}
+
+		th, td {
+			border: 1px solid #d0d0d0;
+			color: #404060;
+			padding: 10px;
+		}
+
+		th {
+			background-color: #09c;
+			font: bold 16px "微软雅黑";
+			color: #fff;
+		}
+
+		td {
+			font: 14px "微软雅黑";
+		}
+
+		tbody tr {
+			background-color: #f0f0f0;
+		}
+
+		tbody tr:hover {
+			cursor: pointer;
+			background-color: #fafafa;
+		}
+		#popupdiv {
+			display: none;
+			border: 2px solid #0094ff;
+			border-radius: 11px;
+			height: 70%;
+			width: 36%;
+			position: absolute; /*让节点脱离文档流,我的理解就是,从页面上浮出来,不再按照文档其它内容布局*/
+			top: 14%; /*节点脱离了文档流,如果设置位置需要用top和left,right,bottom定位*/
+			left: 33%;
+			z-index: 2; /*个人理解为层级关系,由于这个节点要在顶部显示,所以这个值比其余节点的都大*/
+			background: white;
+			text-indent: 11px;
+		}
+
+		#over {
+			width: 100%;
+			height: 100%;
+			opacity: 0.8; /*设置背景色透明度,1为完全不透明,IE需要使用filter:alpha(opacity=80);*/
+			filter: alpha(opacity=80);
+			display: none;
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 1;
+			background: silver;
+		}
+
+	</style>
+</head>
+<body>
+	<input type="text" value="@ViewData["datadtb"]" id="info" style="display:none;" />
+	<div style="margin-top:11px;">
+		<h4 style="text-align:center;">友情链接</h4>
+		<div style="width:99%;margin:0 auto;">
+			<div style="margin:0 11px;">
+				<table class="table" id="datatable">
+					<thead><tr class="success"><td><input type="checkbox" id="j_cbAll" /></td><td>名称</td><td>地址</td><td>操作</td></tr></thead>
+					<tbody id="j_tb"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div id="popupdiv">
+		<a href="javascript:hide()" style="float:right;position:relative;right:6px;top:4px;">关闭</a>
+		<div style="clear:both;">
+			<form class="form-horizontal" id="unform">
+				<input type="hidden" name="nid" id="nid" />
+				<div class="form-group">
+					<label class="col-sm-2 control-label">标题</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" name="ntitle" id="ntitle" placeholder="ntitle" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">内容</label>
+					<div class="col-sm-10">
+						<textarea class="form-control" rows="5" name="ncontent" id="ncontent" placeholder="ncontent"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<div id="msgdiv"></div>
+						<button type="button" class="btn btn-default" onclick="hide()">取消</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-default" onclick="onupbtn()">修改</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div id="over"></div>
+</body>
+</html>

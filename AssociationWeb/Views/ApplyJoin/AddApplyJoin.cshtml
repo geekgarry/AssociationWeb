@@ -1,0 +1,118 @@
+﻿
+@{
+	ViewBag.Title = "AddApplyJoin";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+	<script src="~/Scripts/jquery-3.3.1.js"></script>
+	<script type="text/javascript">
+		//onload
+		$(function () {
+			setInterval("getTime();", 1000); //每隔一秒运行一次
+			var assinfo = eval(document.getElementById("assinfo").value);
+			createassinfoTable(assinfo);
+			/*var dtb = generateDtb();
+			//序列化对象
+			var postdata = JSON.stringify(dtb);
+			$.ajax({
+				type: "GET",
+				url: "~/Admin/AllAdministratorData",
+				data: null, //可选参数
+				dataType: "json",
+				success: function (data) {
+					var jsonstr = eval(data);
+					createTable(data);
+				} //可选参数
+			});*/
+		});
+		//显示Json中的数据
+		function createassinfoTable(json) {
+			var option = null;
+			$.each(json, function () {
+				option = "<option value='" + this.id + "'>" + this.associationname + "</option>";
+				$("#assinfoselect").append(option);
+			});
+		}
+		/**************************************时间格式化处理************************************/
+		//往往json传过来的时间都是"/Date(1405056837780)/"
+		//转换需要的方法
+		String.prototype.ToString = function (format) {
+			var dateTime = new Date(parseInt(this.substring(6, this.length - 2)));
+			format = format.replace("yyyy", dateTime.getFullYear());
+			format = format.replace("yy", dateTime.getFullYear().toString().substr(2));
+			format = format.replace("MM", dateTime.getMonth() + 1);
+			format = format.replace("dd", dateTime.getDate());
+			format = format.replace("hh", dateTime.getHours());
+			format = format.replace("mm", dateTime.getMinutes());
+			format = format.replace("ss", dateTime.getSeconds());
+			format = format.replace("ms", dateTime.getMilliseconds());
+			return format;
+		};
+		//取得系统当前时间
+		function getTime() {
+			var myDate = new Date();
+			var date = myDate.toLocaleDateString();
+			var hours = myDate.getHours();
+			var minutes = myDate.getMinutes();
+			var seconds = myDate.getSeconds();
+			$("#showDate").html(date + "\n" + hours + ":" + minutes + ":" + seconds); //将值赋给div
+		}
+		function onsubmitok(thisform) {
+			var flag = false;
+			with (thisform) {
+				if (thisform.apprisecontent.value == "" || thisform.suggestcontent.value == "") {
+					$("#errormsg").html("不能为空！");
+					flag = false;
+				} else {
+					flag = true;
+				}
+			}
+			return flag;
+		}
+	</script>
+}
+<div>
+	<input type="hidden" value="@ViewData["assinfo"]" id="assinfo" />
+	<span id="showDate"></span>
+	<h2 style="text-align:center;">申请加入社团</h2>
+	<div>
+		<form class="form-horizontal" action="~/ApplyJoin/AddApplyJoin" method="post" onsubmit="return onsubmitok(this)" style="width:260px;margin:0 auto;">
+			<input type="hidden" value="@Session["userid"]" id="stuid" name="stuid" />
+			@{
+				try
+				{
+					//string userid = Session["userid"].ToString();
+					if (Session["userid"] == null)
+					{
+						Response.Write("<script>alert('没有登录！请先登录');window.location.href='/First/StuLogin';</script>");
+					}
+				}
+				catch (Exception e)
+				{
+					Response.Write("<script>alert('" + e.Message + "');window.location.href='/First/StuLogin';</script>");
+				}
+			}
+			<div class="form-group">
+				<textarea class="form-control" rows="3" name="hobbyspeciality" placeholder="兴趣爱好"></textarea>
+			</div>
+			<div class="form-group">
+				<textarea class="form-control" rows="3" name="applyreason" placeholder="申请加入的理由"></textarea>
+			</div>
+			<div class="form-group">
+				<textarea class="form-control" rows="3" name="personalintro" placeholder="介绍一下自己"></textarea>
+			</div>
+			<div class="form-group">
+				<select id="assinfoselect" class="form-control" name="assid">
+					<option>----选择社团----</option>
+				</select>
+			</div>
+			<div class="form-group" id="errormsg">
+				@ViewBag.AddApplyJoin
+			</div>
+			<div class="form-group">
+				<button type="submit" class="btn btn-default">提交</button>
+			</div>
+		</form>
+	</div>
+</div>
+

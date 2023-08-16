@@ -1,0 +1,103 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title - 社团组织管理系统后台(系统管理员端)</title>
+	<style>
+		.left_navbar {
+			width: 15%;
+			margin: 0 auto;
+			float: left;
+		}
+
+		.right_content {
+			width: 85%;
+			margin: 0 auto;
+			float: left;
+			min-height: 500px;
+		}
+	</style>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				@Html.ActionLink("社团组织管理系统后台", "AdminMainIndex", "Admin", new { area = "" }, new { @class = "navbar-brand" })
+			</div>
+			<!--<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li>@Html.ActionLink("主页", "Index", "Home")</li>
+					<li>@Html.ActionLink("关于", "About", "Home")</li>
+					<li>@Html.ActionLink("联系方式", "Contact", "Home")</li>
+				</ul>
+			</div>-->
+		</div>
+	</div>
+	<div class="container body-content">
+		<div>
+			<div class="left_navbar">
+				<ul class="navbar navbar-default navbar-collapse navbar-btn" style="list-style:none;">
+					欢迎您！@Session["adminid"]
+					<li><a href="/Admin/LogoutAdmin">退出</a></li>
+					@{
+						try
+						{
+							//string userid = Session["userid"].ToString();
+							if (Session["adminid"] == null)
+							{
+								Response.Write("<script>alert('没有登录！请先登录');window.location.href='/Admin/AdminLogin';</script>");
+							}
+						}
+						catch (Exception e)
+						{
+							Response.Write("<script>alert('" + e.Message + "');window.location.href='/Admin/AdminLogin';</script>");
+						}
+					}
+					<li>@Html.ActionLink("主页", "AdminMainIndex", "Admin")</li>
+					<li>@Html.ActionLink("添加校园新闻", "AddCampusNews", "CampusNews")</li>
+					<li>@Html.ActionLink("校园新闻管理", "Index", "CampusNews")</li>
+					<li>
+						@Html.ActionLink("网站资源文件上传", "Index", "FileResource")
+					</li>
+					<li>
+						@Html.ActionLink("网站资源文件管理", "AllFileResourceAdmin", "FileResource")
+					</li>
+					<li>@Html.ActionLink("社团/组织信息管理", "Index", "Association")</li>
+					<li>@Html.ActionLink("社团/组织评价建议", "Index", "Apprise")</li>
+					<li>@Html.ActionLink("社团活动评论管理", "Index", "ActivityComment")</li>
+					<li>@Html.ActionLink("系统管理员列表", "AllAdministrator", "Admin")</li>
+					<li>@Html.ActionLink("友情链接管理", "Index", "FriendshipLink")</li>
+					<li>@Html.ActionLink("添加友情链接", "Addlink", "FriendshipLink")</li>
+					<li><a href="/Admin/MyAdminInfo/@Session["id"]">我的信息管理</a></li>
+				</ul>
+			</div>  
+			<div class="right_content">
+				<input type="text" value="@Session["adminid"]" id="aduserid" style="display:none;"/>
+				<input type="text" value="@Session["id"]" id="adid" style="display:none;"/>
+				@RenderBody()
+			</div>
+		</div>
+		<div style="clear:both;"></div>
+		<hr />
+		<footer>
+			<p>&copy; @DateTime.Now.Year - 社团组织管理系统</p>
+			<p>版权所有-geektech</p>
+		</footer>
+	</div>
+
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@RenderSection("scripts", required: false)
+</body>
+</html>

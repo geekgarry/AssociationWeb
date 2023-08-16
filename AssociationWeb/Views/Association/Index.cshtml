@@ -1,0 +1,88 @@
+﻿
+@{
+	ViewBag.Title = "Index";
+	Layout = "~/Views/Shared/Admin_Layout.cshtml";
+}
+@section Scripts{
+	<script src="~/Scripts/jquery-3.3.1.js"></script>
+	<script type="text/javascript">
+		//弹出一个询问框，有确定和取消按钮
+		function firm(assid) {
+			//利用对话框返回的值 （true 或者 false）
+			if (confirm("点击了删除，确定要删除吗？")) {
+				//alert("点击了确定");
+				window.location.href = "/Association/Delete/" + assid;
+				return true;
+			} else {
+				//alert("点击了取消");
+				return false;
+			}
+
+		}
+		/*function show(assname, assintro, tinch, stuinch) {
+			var popupdiv = document.getElementById('popupdiv');
+			var over = document.getElementById('over');
+			popupdiv.style.display = "block";
+			over.style.display = "block";
+			$("#assname").html(assname);
+			$("#assintro").html(assintro);
+			$("#tinch").html(tinch);
+			$("#stuinch").html(stuinch);
+		}*/
+		function openurl(assid) {
+			href.location = "/Association/OneAssInfoAdmin/" + assid;
+		}
+		function hide() {
+			var popupdiv = document.getElementById('popupdiv');
+			var over = document.getElementById('over');
+			popupdiv.style.display = "none";
+			over.style.display = "none";
+		}
+	</script>
+}
+<style type="text/css">
+
+	#popupdiv {
+		display: none;
+		border: 1em solid #0094ff;
+		height: 30%;
+		width: 50%;
+		position: absolute; /*让节点脱离文档流,我的理解就是,从页面上浮出来,不再按照文档其它内容布局*/
+		top: 24%; /*节点脱离了文档流,如果设置位置需要用top和left,right,bottom定位*/
+		left: 24%;
+		z-index: 2; /*个人理解为层级关系,由于这个节点要在顶部显示,所以这个值比其余节点的都大*/
+		background: white;
+	}
+
+	#over {
+		width: 100%;
+		height: 100%;
+		opacity: 0.8; /*设置背景色透明度,1为完全不透明,IE需要使用filter:alpha(opacity=80);*/
+		filter: alpha(opacity=80);
+		display: none;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1;
+		background: silver;
+	}
+</style>
+<div style="text-align:center; margin:5px 11px;">
+	<h2>所有社团/组织信息</h2>
+	<div>
+		@ViewBag.delete
+	</div>
+	<table class="table table-hover">
+		<tr><td>用户名</td><td>社团/组织</td><td>简介</td><td>教师负责人</td><td>学生负责人</td><td>注册时间</td><td>操作</td></tr>
+		@Html.Raw(ViewData["assdata"])
+	</table>
+	<div id="popupdiv">
+		<a href="javascript:hide()">关闭</a>
+		<div id="assname">这里是关闭弹窗的内容</div>
+		<div id="assintro">这里是关闭弹窗的内容</div>
+		<div id="tinch">这里是关闭弹窗的内容</div>
+		<div id="stuinch">这里是关闭弹窗的内容</div>
+	</div>
+	<div id="over"></div>
+</div>
+

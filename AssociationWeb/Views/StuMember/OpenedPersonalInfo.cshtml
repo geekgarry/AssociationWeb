@@ -1,0 +1,267 @@
+﻿
+@{
+	ViewBag.Title = "OpenedPersonalInfo";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+	<script src="~/Scripts/jquery-3.3.1.js"></script>
+	<script type="text/javascript">
+		//onload
+		$(function () {
+			var accomment = eval($("#myaccomment").val());
+			createaccTable(accomment);
+			//alert(accomment);
+			//setInterval("getTime();", 1000); //每隔一秒运行一次
+			/*var dtb = generateDtb();
+			//序列化对象
+			var postdata = JSON.stringify(dtb);
+			$.ajax({
+				type: "GET",
+				url: "~/Admin/AllAdministratorData",
+				data: null, //可选参数
+				dataType: "json",
+				success: function (data) {
+					var jsonstr = eval(data);
+					createTable(data);
+				} //可选参数
+			});*/
+		});
+		//弹出一个询问框，有确定和取消按钮
+		/*function firm(assid) {
+			//利用对话框返回的值 （true 或者 false）
+			if (confirm("点击了删除，确定要删除吗？")) {
+				//alert("点击了确定");
+				window.location.href = "Association/Delete/" + assid;
+				return true;
+			} else {
+				//alert("点击了取消");
+				return false;
+			}
+
+		}*/
+		function createaccTable(jsonstr) {
+			var commennttable = $("#acccommentdtb");
+			/*var ol = null;
+			for (var i = 0; i < jsonstr.length; i++) {
+				o1 = jsonstr[i];
+				var row = $("<tr></tr>");
+				for (key in o1) {
+					var td = $("<td></td>");
+					td.text(o1[key].toString());
+					td.appendTo(row);
+				}
+				row.appendTo(table);
+			}
+			table.appendTo(commennttable);*/
+			$.each(jsonstr, function () {
+				var tr = "<tr><td><a style='color:#000000;text-decoration:none;' href='/AssociationActivity/OneAssActivity/" + this.associationactivityid + "' target='_blank'><span style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>" + (this.activitytitle.length > 24 ? this.activitytitle.substr(0, 22) + "..." : this.activitytitle) +
+					"</span></a><div>评论："+ this.activitycomment + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ this.create_time.ToString("yyyy年MM月dd日") +"</div></td></tr>";
+				commennttable.append(tr);
+			});
+		}
+		function show(nickname, college, stuclass, phonenumber, hobby, perintro) {
+			var popupdiv = document.getElementById('popupdiv');
+			var over = document.getElementById('over');
+			popupdiv.style.display = "block";
+			over.style.display = "block";
+			$("#nickname").val(nickname);
+			$("#college").val(college);
+			$("#stuclass").val(stuclass);
+			$("#phonenumber").val(phonenumber);
+			$("#hobby").val(hobby);
+			$("#personalintro").val(perintro);
+		}
+		/*function openurl(assid) {
+			href.location = "/Association/OneAssInfoAdmin/" + assid;
+		}*/
+		function hide() {
+			var popupdiv = document.getElementById('popupdiv');
+			var over = document.getElementById('over');
+			popupdiv.style.display = "none";
+			over.style.display = "none";
+		}
+		/**************************************时间格式化处理************************************/
+		//往往json传过来的时间都是"/Date(1405056837780)/"
+		//转换需要的方法
+		String.prototype.ToString = function (format) {
+			var dateTime = new Date(parseInt(this.substring(6, this.length - 2)));
+			format = format.replace("yyyy", dateTime.getFullYear());
+			format = format.replace("yy", dateTime.getFullYear().toString().substr(2));
+			format = format.replace("MM", dateTime.getMonth() + 1);
+			format = format.replace("dd", dateTime.getDate());
+			format = format.replace("hh", dateTime.getHours());
+			format = format.replace("mm", dateTime.getMinutes());
+			format = format.replace("ss", dateTime.getSeconds());
+			format = format.replace("ms", dateTime.getMilliseconds());
+			return format;
+		};
+		//取得系统当前时间
+		function getTime() {
+			var myDate = new Date();
+			var date = myDate.toLocaleDateString();
+			var hours = myDate.getHours();
+			var minutes = myDate.getMinutes();
+			var seconds = myDate.getSeconds();
+			//$("#showDate").html(date + "\n" + hours + ":" + minutes + ":" + seconds); //将值赋给div
+		}
+	</script>
+}
+<style>
+	.personalinfo div {
+		min-height: 35px;
+		font-size: 15px;
+	}
+
+	.personalinfo span {
+		text-align: right;
+		float: right;
+		position: relative;
+		right: 11px;
+	}
+
+	.personalinfo a {
+		text-decoration: none;
+		text-align: right;
+	}
+
+	#popupdiv {
+		display: none;
+		border: 2px solid #0094ff;
+		border-radius: 11px;
+		height: 70%;
+		width: 36%;
+		position: absolute; /*让节点脱离文档流,我的理解就是,从页面上浮出来,不再按照文档其它内容布局*/
+		top: 14%; /*节点脱离了文档流,如果设置位置需要用top和left,right,bottom定位*/
+		left: 33%;
+		z-index: 2; /*个人理解为层级关系,由于这个节点要在顶部显示,所以这个值比其余节点的都大*/
+		background: white;
+		text-indent: 11px;
+	}
+
+	#over {
+		width: 100%;
+		height: 100%;
+		opacity: 0.8; /*设置背景色透明度,1为完全不透明,IE需要使用filter:alpha(opacity=80);*/
+		filter: alpha(opacity=80);
+		display: none;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1;
+		background: silver;
+	}
+</style>
+<input type="hidden" value="@ViewData["myaccommenttb"]" id="myaccomment"/>
+<div style="margin-top:11px;">
+	<div style="width:80%; float:left;">
+		<div class="myinfomenu">发表的评论</div>
+		<table id="acccommentdtb" class="table" >
+			<tbody></tbody>
+		</table>
+	</div>
+	<div style="width:20%; float:left;background:#fefefe;">
+		<div style="margin:5px 11px;">
+			<img src="~/images/asslogo2.jpg" alt="社团组织联合网" class="img-circle" style="width:110px;height:110px;">
+			<div class="personalinfo">
+				<div>
+					ID:
+					@ViewData["id"]<span><a href="javascript: void(0);" onclick="show(&quot;@ViewData["nickname"]&quot;,&quot;@ViewData["collegedepartment"]&quot;,&quot;@ViewData["stuclass"]&quot;,&quot;@ViewData["phonenumber"]&quot;,&quot;@ViewData["hobbyspeciality"]&quot;,&quot;@ViewData["personalintro"]&quot;);" style="display:none;">修改资料</a></span>
+					@{
+						try
+						{
+							//string userid = Session["userid"].ToString();
+							if (Session["userid"] == null)
+							{
+								Response.Write("<script>alert('没有登录！请先登录');window.location.href='/First/StuLogin';</script>");
+							}
+						}
+						catch (Exception e)
+						{
+							Response.Write("<script>alert('" + e.Message + "');window.location.href='/First/StuLogin';</script>");
+						}
+					}
+				</div>
+				<div>
+					@ViewData["nickname"]
+				</div>
+				<div>
+					学院-班级:
+					@ViewData["collegedepartment"]
+					-
+					@ViewData["stuclass"]
+				</div>
+				<!--<div>
+					手机:
+					ViewData["phonenumber"]
+				</div>-->
+				<!--ViewData["password"]
+					ViewData["associationids"]-->
+				<div>
+					兴趣爱好:
+					@ViewData["hobbyspeciality"]
+				</div>
+				<div>
+					简介:
+					@ViewData["personalintro"]
+				</div>
+				<!--<div>
+					注册时间:
+					ViewData["create_time"]
+				</div>-->
+			</div>
+		</div>
+	</div>
+	<div style="clear:both;"></div>
+	<div id="popupdiv">
+		<a href="javascript:hide()" style="float:right;position:relative;right:6px;top:4px;">关闭</a>
+		<div style="clear:both;">
+			<form class="form-horizontal" action="/StuMember/UpdateStuMember" method="post">
+				<div class="form-group">
+					<input type="hidden" value="@ViewData["id"]" name="stuid" />
+				</div>
+				<div class="form-group">
+					<label for="nickname" class="col-sm-2 control-label">昵称</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" name="nickname" id="nickname" placeholder="realname" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="college" class="col-sm-2 control-label">学院</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" name="college" id="college" placeholder="college" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="stuclass" class="col-sm-2 control-label">班级</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" name="stuclass" id="stuclass" placeholder="stuclass" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="phonenumber" class="col-sm-2 control-label">手机</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" name="phonenumber" id="phonenumber" placeholder="phonenumber" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="hobby" class="col-sm-2 control-label">兴趣爱好</label>
+					<div class="col-sm-10">
+						<textarea class="form-control" rows="3" name="hobby" id="hobby" placeholder="hobby"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="personalintro" class="col-sm-2 control-label">简介</label>
+					<div class="col-sm-10">
+						<textarea class="form-control" rows="3" name="personalintro" id="personalintro" placeholder="personalintroduction"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-default" onclick="hide()">取消</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" class="btn btn-default">修改</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div id="over"></div>
+</div>

@@ -1,0 +1,13 @@
+﻿body {
+}
+.left_navbar {
+	width: 13%;
+	margin: 0 auto;
+	float: left;
+}
+.right_content {
+	width: 87%;
+	margin: 0 auto;
+	float: left;
+	min-height:500px;
+}

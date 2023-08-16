@@ -1,0 +1,69 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>StuLogin</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+	<link href="~/Content/StuLogin.css" rel="stylesheet" />
+</head>
+<body>
+	@{
+		ViewBag.Title = "StuLogin";
+	}
+	<div class="container">
+		<br/>
+		<h2 style="text-align:center;">学生登陆界面</h2>
+		<br/>
+		<br/>
+		<div class="main_content">
+			<form class="form-horizontal" action="~/First/StuLogin" method="post" style="margin-left:30%;">
+				<div class="form-group">
+					<label for="inputEmail3" class="col-sm-2 control-label">UserName</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputEmail3" name="username" placeholder="UserName">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+					<div class="col-sm-10">
+						<input type="password" class="form-control" id="inputPassword3" name="password" placeholder="Password">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox"> 记住账号
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						没有账号？请<a href="~/First/StuRegister">注册</a>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<div id="loginState">
+							@ViewBag.LoginState
+						</div>
+						<button type="submit" class="btn btn-default">登陆</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>

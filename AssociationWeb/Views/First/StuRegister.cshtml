@@ -1,0 +1,105 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>学生注册页面</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/modernizr")
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+</head>
+<body>
+	<div class="container">
+		<h2 style="text-align:center;">学生注册</h2>
+		<br/>
+		<br/>
+		<div>
+			<form class="form-horizontal" action="~/First/StuRegister" method="post" onsubmit="return onsubmitlogin(this)" style="margin-left:30%;">
+				<div class="form-group">
+					<label for="inputUserid3" class="col-sm-2 control-label">Userid</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputUserid3" name="userid" placeholder="Userid" alt="输入注册学号">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputRealname3" class="col-sm-2 control-label">Realname</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputRealname3" name="realname" placeholder="Realname">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputnNickname3" class="col-sm-2 control-label">Nickname</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputNickname3" name="nickname" placeholder="Nickname">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputStuClass3" class="col-sm-2 control-label">StuClass</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputStuClass3" name="stuclass" placeholder="StuClass">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputCollege3" class="col-sm-2 control-label">College/Dept</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputCollege3" name="college" placeholder="College/Dept">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputPhonenumber3" class="col-sm-2 control-label">Phonenumber</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputPhonenumber3" name="phonenumber" placeholder="Phonenumber">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+					<div class="col-sm-10">
+						<input type="password" class="form-control" id="inputPassword3" name="password" placeholder="Password">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputConfirmPassword3" class="col-sm-2 control-label">ConfirmPassword</label>
+					<div class="col-sm-10">
+						<input type="password" class="form-control" id="inputConfirmPassword3" name="confirmpassword" placeholder="ConfirmPassword">
+					</div>
+				</div>
+				<script type="text/javascript" language="javascript">
+					var allinput = document.getElementById("userid").nodeValue;
+					function onsubmitlogin(thisform) {
+						with (thisform) {
+							var flag = false;
+							if (thisform.password.value == "" && thisform.confirmpassword.value == "") {
+								$("#errormsg").html("密码不能为空！");
+								flag = false;
+							} else if (thisform.password.value == thisform.confirmpassword.value) {
+								flag = true;
+							} else {
+								$("#errormsg").html("前后密码不一致！");
+								//alert("dsgz" + allinput);
+								flag = false;
+							}
+						}
+						return flag;
+					}
+				</script>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10" id="errormsg">
+						@ViewBag.LoginState
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-default">Sign in</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

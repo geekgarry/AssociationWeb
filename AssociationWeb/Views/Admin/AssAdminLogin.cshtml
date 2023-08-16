@@ -1,0 +1,42 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>社团管理员登录</title>
+	@Styles.Render("~/Content/css")
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+	<div style="text-align:center;">
+		<h2>社团管理员登录</h2>
+		<br />
+		<br />
+		<form class="form-inline" action="~/Admin/AssAdminLogin" method="post">
+			<div class="form-group">
+				<label for="exampleInputUserid2">Userid</label>
+				<input type="text" class="form-control" id="exampleInputUserid2" name="userid" placeholder="Userid">
+			</div>
+			<div class="form-group">
+				<label for="exampleInputPassword2">Password</label>
+				<input type="password" class="form-control" id="exampleInputPassword2" name="password" placeholder="Password">
+			</div>
+			<button type="submit" class="btn btn-default">登录</button>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<a class="btn btn-default" href="~/Admin/AssAdminRegister">注册 &raquo;</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

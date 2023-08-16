@@ -1,0 +1,343 @@
+﻿
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>社团组织联合官网</title>
+	@section Scripts{
+		<script src="~/Scripts/jquery-3.3.1.js"></script>
+		<script type="text/javascript">
+			//onload
+			$(function () {
+				setInterval("getTime();", 1000); //每隔一秒运行一次
+				var jsonstr = eval(document.getElementById("jsonstr").value);
+				//alert(document.getElementById("jsonstr").value);
+				var assinfo = eval(document.getElementById("assinfo").value);
+				var assac = eval(document.getElementById("assacdata").value);
+				var news = eval(document.getElementById("news").value);
+				var notice = eval(document.getElementById("notice").value);
+				var resource = eval(document.getElementById("resource").value);
+				var apprise = eval(document.getElementById("apprise").value);
+				var commentdt = eval(document.getElementById("commentdtb").value);
+				createTable(jsonstr);
+				createassinfoTable(assinfo);
+				createassacTable(assac);
+				createnewsTable(news);
+				createnoticeTable(notice);
+				createresourceTable(resource);
+				createappriseTable(apprise);
+				createcommentTable(commentdt);
+				/*var dtb = generateDtb();
+				//序列化对象
+				var postdata = JSON.stringify(dtb);
+				$.ajax({
+					type: "GET",
+					url: "~/Admin/AllAdministratorData",
+					data: null, //可选参数
+					dataType: "json",
+					success: function (data) {
+						var jsonstr = eval(data);
+						createTable(data);
+					} //可选参数
+				});*/
+			});
+			//显示Json中的数据
+			function createassinfoTable(json) {
+				//for (var i = 0; i < json.length; i++) {}
+				$.each(json, function () {
+					var tr = "<tr><td><a style='color:#000000;text-decoration:none;' href='/Association/OneAssInfo/"+this.id+"' target='_blank'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>" + this.associationname + "</div></a></td><td><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"
+						+ this.teacherincharge+ "</div></td><td><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>" + this.stuincharge + "</div></td></tr>";
+					$("#assinfotb").append(tr);
+				});
+			}
+			function createassacTable(json) {
+				$.each(json, function () {
+					var tr = "<tr><td><span style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a style='color:#000000;text-decoration:none;' href='/AssociationActivity/OneAssActivity/" + this.id + "' target='_blank'>" + (this.activitytitle.length > 11 ? this.activitytitle.substr(0, 10) + "..." : this.activitytitle) + "</a></span><div>负责人："
+						+ this.personalincharge + "</div><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><span>" + this.associationname + "</span>&nbsp;&nbsp;" + this.create_time.ToString("yyyy年MM月dd日") + "</div></td></tr>";
+					$("#assactivitytb").append(tr);
+				});
+			}
+			function createnewsTable(json) {
+				$.each(json, function () {
+					var tr = "<tr><td><span style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a style='color:#000000;text-decoration:none;' href='/CampusNews/OneCampusNews/" + this.id + "' target='_blank'>" + this.newtitle
+						+ "</a></span><div>发布：" + this.editorname + "&nbsp;&nbsp;<span>" + this.create_time.ToString("yyyy年MM月dd日hh时mm分ss秒") + "</span></div></td></tr>";
+					$("#newstb").append(tr);
+				});
+			}
+			function createnoticeTable(json) {
+				$.each(json, function () {
+					var tr = "<tr><td><span style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a style='color:#000000;text-decoration:none;' href='/AssociationInform/OneAssInform/" + this.id + "' target='_blank'>" + (this.noticetitle.length > 11 ? this.noticetitle.substr(0, 10) + "..." : this.noticetitle)
+						+ "</a></span><div>" + this.associationname + "&nbsp;&nbsp;<span>" + this.create_time.ToString("yyyy年MM月dd日") + "</span></div></td></tr>";
+					$("#noticetb").append(tr);
+				});
+			}
+			function createresourceTable(json) {
+				$.each(json, function () {
+					var filenames = this.dfileposition;
+					var tr = "<tr><td><a style='color:#000000;text-decoration:none;' href='javascript: void(0)' onclick=\"show('" + this.dtitle + "','" + this.dcontent + "','" + this.dtype + "','" + this.dfileposition +"')\"><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>" + this.dtitle + "</div></a></td><td><div>" + this.dtype + "</div></td><td><div>" + this.upidname
+						+ "</div></td><td><div>" + this.create_time.ToString("yyyy年MM月dd日hh时") + "</div></td><td><div><a style='color:#000000;text-decoration:none;' href='" + filenames + "' target='_blank'>下载</a></div></td></tr>";
+					$("#resourcetb").append(tr);
+				});
+			}
+			function createappriseTable(json) {
+				$.each(json, function () {
+					var tr = "<tr><td><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>社团："
+						+ this.associationname + "</div><a style='color:#000000;text-decoration:none;' href='/Apprise/OneApprise/" + this.id + "' target='_blank'><span>建议：" + (this.suggestcontent.length > 20 ? this.suggestcontent.substr(0, 19) + "..." : this.suggestcontent) + "</span></a><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a style='color:#000000;text-decoration:none;' href='/Apprise/OneApprise/"
+						+ this.id + "' target='_blank'>评价：" + (this.apprisecontent.length > 30 ? this.apprisecontent.substr(0, 28) + "..." : this.apprisecontent) + "</a></div></td></tr>";
+					$("#apprisetb").append(tr);
+				});
+			}
+			function createcommentTable(json) {
+				$.each(json, function () {
+					var tr = "<tr><td><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>活动：" +(this.activitytitle.length > 12 ? this.activitytitle.substr(0, 10) + "..." : this.activitytitle)
+						+ "</div><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a style='color:#000000;text-decoration:none;' href='/ActivityComment/OneAcComment/" + this.id + "' target='_blank'>评论：" + (this.activitycomment.length > 12 ? this.activitycomment.substr(0, 10) + "..." : this.activitycomment) + "</a></div></td></tr>";
+					$("#commenttb").append(tr);
+				});
+			}
+			//显示Json中的数据
+			function createTable(json) {
+				/*for (var i = 0; i < json.length; i++) {
+					o1 = json[i];
+					var row = $("<tr></tr>");
+					for (key in o1) {
+						var td = $("<td></td>");
+						td.text(o1[key].toString());
+						td.appendTo(row);
+					}
+					row.appendTo(table);
+				}
+				table.appendTo(admintb);*/
+				$.each(json, function () {
+					var tr = "<td><a style='color:#010101' href='" + this.linkurl + "' target='_blank'>" + this.linkname + "</a></td>";
+					$("#linkdata").append(tr);
+				});
+			}
+			//弹出一个询问框，有确定和取消按钮
+			/*function firm(assid) {
+				//利用对话框返回的值 （true 或者 false）
+				if (confirm("点击了删除，确定要删除吗？")) {
+					//alert("点击了确定");
+					window.location.href = "Association/Delete/" + assid;
+					return true;
+				} else {
+					//alert("点击了取消");
+					return false;
+				}
+
+			}*/
+			function show(dtitle, dcontent, dtype, dfileposition) {
+				var popupdiv = document.getElementById('popupdiv');
+				var over = document.getElementById('over');
+				popupdiv.style.display = "block";
+				over.style.display = "block";
+				$("#dtitle").html(dtitle);
+				$("#dcontent").html(dcontent);
+				$("#dtype").html(dtype);
+				$("#dfileposition").attr('href', dfileposition);
+			}
+			/*function openurl(assid) {
+				href.location = "/Association/OneAssInfoAdmin/" + assid;
+			}*/
+			function hide() {
+				var popupdiv = document.getElementById('popupdiv');
+				var over = document.getElementById('over');
+				popupdiv.style.display = "none";
+				over.style.display = "none";
+			}
+			/**************************************时间格式化处理************************************/
+			//往往json传过来的时间都是"/Date(1405056837780)/"
+			//转换需要的方法
+			String.prototype.ToString = function (format) {
+				var dateTime = new Date(parseInt(this.substring(6, this.length - 2)));
+				format = format.replace("yyyy", dateTime.getFullYear());
+				format = format.replace("yy", dateTime.getFullYear().toString().substr(2));
+				format = format.replace("MM", dateTime.getMonth() + 1);
+				format = format.replace("dd", dateTime.getDate());
+				format = format.replace("hh", dateTime.getHours());
+				format = format.replace("mm", dateTime.getMinutes());
+				format = format.replace("ss", dateTime.getSeconds());
+				format = format.replace("ms", dateTime.getMilliseconds());
+				return format;
+			};
+			//取得系统当前时间
+			function getTime() {
+				var myDate = new Date();
+				var date = myDate.toLocaleDateString();
+				var hours = myDate.getHours();
+				var minutes = myDate.getMinutes();
+				var seconds = myDate.getSeconds();
+				$("#showDate").html(date + "\n" + hours + ":" + minutes + ":" + seconds); //将值赋给div
+			}
+		</script>
+	}
+	<style type="text/css">
+		#linkdata a{
+			color: #0094ff;
+			text-decoration: none;
+		}
+		#popupdiv {
+			display: none;
+			border: 2px solid #0094ff;
+			border-radius:11px;
+			height: 45%;
+			width: 40%;
+			position: absolute; /*让节点脱离文档流,我的理解就是,从页面上浮出来,不再按照文档其它内容布局*/
+			top: 24%; /*节点脱离了文档流,如果设置位置需要用top和left,right,bottom定位*/
+			left: 30%;
+			z-index: 2; /*个人理解为层级关系,由于这个节点要在顶部显示,所以这个值比其余节点的都大*/
+			background: white;
+			text-indent:11px;
+		}
+
+		#over {
+			width: 100%;
+			height: 100%;
+			opacity: 0.8; /*设置背景色透明度,1为完全不透明,IE需要使用filter:alpha(opacity=80);*/
+			filter: alpha(opacity=80);
+			display: none;
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 1;
+			background: silver;
+		}
+	</style>
+</head>
+<body>
+	<input type="hidden" value="@ViewData["assinfo"]" id="assinfo" />
+	<input type="hidden" value="@ViewData["assac"]" id="assacdata" />
+	<input type="hidden" value="@ViewData["news"]" id="news" />
+	<input type="hidden" value="@ViewData["notice"]" id="notice" />
+	<input type="hidden" value="@ViewData["resource"]" id="resource" />
+	<input type="hidden" value="@ViewData["apprise"]" id="apprise" />
+	<input type="hidden" value="@ViewData["commentdtb"]" id="commentdtb" />
+	<div class="container" style="background:#fefefe;clear:both;">
+		<div style="float:left;width:27%;">
+			<div style="width:98%; margin:3px auto;">
+				<div style="font-size:14px;">
+					<div style="background:#d4d4d4;color:#000000;">最新通知&nbsp;&nbsp;&nbsp;&nbsp;<a style="color:#000000;" href="/AssociationInform/AllInform">更多 &raquo;</a></div>
+					<table id="noticetb" class="table table-striped">
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
+			<div style="width:98%; margin:3px auto;">
+				<div style="font-size:13px;">
+					<div style="background:#d4d4d4;color:#000000;">最新活动查看&nbsp;&nbsp;&nbsp;&nbsp;<a style="color:#000000;" href="/AssociationActivity/AllAssActivity">更多 &raquo;</a></div>
+					<table id="assactivitytb" class="table table-hover">
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div style="float:left;width:50%;">
+			<div style="width:98%; margin:3px auto;">
+				<div style="font-size:13px;">
+					<div style="background:#d4d4d4;color:#000000;">校园新闻查看&nbsp;&nbsp;&nbsp;&nbsp;<a style="color:#000000;" href="/CampusNews/AllCampusNews">更多 &raquo;</a></div>
+					<table id="newstb" class="table table-condensed">
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
+			<div style="width:98%; margin:3px auto;">
+				<div style="font-size:13px;">
+					<div style="background:#d4d4d4;color:#000000;">资料下载查看&nbsp;&nbsp;&nbsp;&nbsp;<a style="color:#000000;" href="/FileResource/AllResource">更多 &raquo;</a></div>
+					<table id="resourcetb" class="table table-bordered">
+						<thead>
+							<tr>
+								<td>名称</td>
+								<td>类型</td>
+								<td>上传者</td>
+								<td>上传时间</td>
+								<td>操作</td>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
+			<div style="width:98%; margin:3px auto;">
+				<div style="font-size:13px;">
+					<div style="background:#d4d4d4;color:#000000;">社团建设&raquo;&raquo;</div>
+					<table id="apprisetb" class="table table-striped">
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div style="float:left;width:23%;">
+			<div style="width:97%; margin:3px auto;background:#f5f5f6;">
+				<div style="font-size:14px;">
+					系统登录信息
+					<div style="height:1px;background:#ffd800;width:100%;"></div>
+					<div>
+						<!--@Html.ActionLink("欢迎您！" + @Session["userid"], "MyStuInfo", "StuMember", new { id = @Session["userid"] })-->
+						欢迎您！
+						<a href="/StuMember/MyStuInfo/@Session["userid"]" target="_blank">
+							@Session["userid"]
+						</a>
+						@{
+							try
+							{
+								//string userid = Session["userid"].ToString();
+								if (Session["userid"] == null)
+								{
+									Response.Write("<script>alert('没有登录！请先登录');window.location.href='/First/StuLogin';</script>");
+								}
+							}
+							catch (Exception e)
+							{
+								Response.Write("<script>alert('" + e.Message + "');window.location.href='/First/StuLogin';</script>");
+							}
+						}
+					</div>
+					<div>
+						<a href="/First/LogoutUser">退出</a>
+					</div>
+				</div>
+				<div style="font-size:12px;">
+					<div style="background:#0094ff;color:#f5f5f6;">社团组织查看&nbsp;&nbsp;&nbsp;&nbsp;<a style="color:#f5f5f6;" href="/Association/AllAssociation">更多 &raquo;</a></div>
+					<table id="assinfotb" class="table table-striped">
+						<tr><td>社团/组织</td><td>负责教师</td><td>负责学生</td></tr>
+					</table>
+				</div>
+				<div style="font-size:12px;">
+					<div style="background:#0094ff;color:#f5f5f6;">未定义板块&raquo;&raquo;</div>
+					<table id="" class="table table-striped">
+						<tr><td>未定义</td><td>未定义</td><td>未定义</td></tr>
+					</table>
+				</div>
+			</div>
+			<div style="width:97%; margin:3px auto;background:#f8f8f8;">
+				<div style="font-size:12px;">
+					<div style="background:#0094ff;color:#f5f5f6;">最新活动评论&raquo;&raquo;</div>
+					<table id="commenttb" class="table table-condensed">
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div style="clear:both;"></div>
+		<div style="height:40px;line-height:40px; text-align:center;">
+			<input type="hidden" value="@ViewData["fdshiplink"]" id="jsonstr" />
+			<div style="text-align:center;">友情链接</div>
+			<table id="linkdata" class="table" style="background:#a8f8e7;"><tr></tr></table>
+		</div>
+		<div id="popupdiv">
+			<a href="javascript:hide()" style="float:right;position:relative;right:6px;top:4px;">关闭</a>
+			<div style="clear:both;"></div>
+			<div id="dtitle">这里是关闭弹窗的内容</div>
+			<div id="dcontent">这里是关闭弹窗的内容</div>
+			<div id="dtype">这里是关闭弹窗的内容</div>
+			<div style="text-align:center;"><a id="dfileposition" href="" target="_blank">下载</a></div>
+		</div>
+		<div id="over"></div>
+	</div>
+</body>
+</html>
